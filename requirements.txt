@@ -1,0 +1,5 @@
+greenlet==3.0.3
+msgpack==1.0.8
+numpy==2.1.0
+PyAudio==0.2.14
+pydub==0.25.1
