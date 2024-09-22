@@ -7,7 +7,7 @@ from pydub.playback import play
 import os
 
 # Threshold settings
-DECIBEL_THRESHOLD = -22.0  # Adjust this to set the sensitivity in dB
+DECIBEL_THRESHOLD = -30.0  # Adjust this to set the sensitivity in dB
 ALERT_FREQUENCY = 1  # Time in seconds between alerts
 SENSITIVITY = 0.8  # 0.0 (pure RMS) to 1.0 (pure Peak)
 
@@ -55,7 +55,7 @@ last_alert_time = 0
 try:
     while stream.is_active():
         db = 20 * log10(hybrid_metric)
-        print(f"Hybrid Metric: {hybrid_metric} DB: {db}")
+        # print(f"Hybrid Metric: {hybrid_metric} DB: {db}")
 
         # Check if the decibel level exceeds the threshold
         if db > DECIBEL_THRESHOLD and (time.time() - last_alert_time) > ALERT_FREQUENCY:
