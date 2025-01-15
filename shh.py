@@ -5,11 +5,14 @@ import audioop
 from pydub import AudioSegment
 from pydub.playback import play
 import os
+import platform
 
 # Threshold settings
-DECIBEL_THRESHOLD = -30.0  # Adjust this to set the sensitivity in dB
-ALERT_FREQUENCY = 1  # Time in seconds between alerts
-SENSITIVITY = 0.8  # 0.0 (pure RMS) to 1.0 (pure Peak)
+ALERT_FREQUENCY = float(os.environ.get('SHH_ALERT_FREQUENCY', '1'))  # Time in seconds between alerts
+ALERT_MESSAGE = os.environ.get('SHH_ALERT_MESSAGE', 'Please be quiet, you are too loud!')
+ALERT_SOUND = os.environ.get('SHH_ALERT_SOUND', 'alert.wav') # Must be wav file
+DECIBEL_THRESHOLD = float(os.environ.get('SHH_DECIBEL_THRESHOLD', '-30.0'))  # Adjust this to set the sensitivity in dB
+SENSITIVITY = float(os.environ.get('SHH_SENSITIVITY', '0.8'))  # 0.0 (pure RMS) to 1.0 (pure Peak)
 
 # Initialize PyAudio
 p = pyaudio.PyAudio()
@@ -22,10 +25,13 @@ def play_alert():
     play(alert_sound)
 
 def send_system_notification():
-    if os.name == 'nt':  # Windows
-        os.system('msg * "Please be quiet, you are too loud!"')
-    else:
-        os.system('notify-send "Please be quiet, you are too loud!"')
+    system = platform.system()
+    if system == 'Windows':
+        os.system(f"msg * \"{ALERT_MESSAGE}\"")
+    elif system == 'Darwin': # macOS
+        os.system(f"osascript -e 'display notification \"{ALERT_MESSAGE}\" with title \"Shh\"'")
+    elif system == 'Linux':
+        os.system(f"notify-send '{ALERT_MESSAGE}'")
 
 def callback(in_data, frame_count, time_info, status):
     global hybrid_metric
@@ -37,7 +43,7 @@ def callback(in_data, frame_count, time_info, status):
     return in_data, pyaudio.paContinue
 
 # Load the sound file once
-alert_sound = AudioSegment.from_file("alert.wav", format="wav")
+alert_sound = AudioSegment.from_file(ALERT_SOUND)
 
 # Open the stream
 stream = p.open(format=p.get_format_from_width(WIDTH),
@@ -49,7 +55,6 @@ stream = p.open(format=p.get_format_from_width(WIDTH),
                 stream_callback=callback)
 
 stream.start_stream()
-
 last_alert_time = 0
 
 try:
