@@ -54,7 +54,7 @@ jobs:
 
       - name: Build Executable
         run: |
-          pyinstaller --noconsole shh.py
+          pyinstaller --noconsole --onefile shh.py
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
