@@ -56,11 +56,20 @@ jobs:
         run: |
           pyinstaller --noconsole --onefile shh.py
 
+      - name: Compress macOS App Bundle
+        if: runner.os == 'macOS'
+        run: |
+          cd dist
+          zip -r shh.app.zip shh.app
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: shh-${{ runner.os }}
-          path: dist/*
+          path: |
+            dist/ssh.app.zip
+            dist/ssh.exe
+            dist/shh
 
   release:
     needs: build
