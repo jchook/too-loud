@@ -55,6 +55,7 @@ jobs:
       - name: Build Executable
         run: |
           pyinstaller --noconsole --onefile shh.py
+          find dist
 
       - name: Compress macOS App Bundle
         if: runner.os == 'macOS'
