@@ -7,8 +7,6 @@ Too Loud
 About
 -----
 
-For night owls or morning larks, it's easy to get carried away and get a little loud while others in your household are trying to get their much needed rest.
-
 This app monitors the microphone input on your computer and plays a "SHH!" sound when you exceed a certain decibel threshold.
 
 

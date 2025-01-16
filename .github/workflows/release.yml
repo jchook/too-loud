@@ -54,7 +54,7 @@ jobs:
           mv shh shh-darwin
 
       - name: Rename Linux Binary
-        if: runner.os == 'ubuntu-latest'
+        if: runner.os == 'Linux'
         run: |
           mv dist/shh dist/shh-linux
 
@@ -77,13 +77,21 @@ jobs:
         uses: actions/download-artifact@v4
       - name: List downloaded artifacts
         run: |
-          echo "Listing files in the workspace:"
-          ls -R
-          echo "Detailed tree:"
           find .
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          body: |
+            ## Downloads
+
+            - 🪟 **Windows:** [shh.exe](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/shh.exe)
+            - 🐧 **Linux:** [shh-linux](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/shh-linux)
+            - 🍎 **macOS:** [shh-macOS.zip](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/shh-macOS.zip)
+
+              **Instructions:**
+            - **Windows:** Download `shh.exe` and double-click to run.
+            - **Linux:** Download `shh-linux`, make it executable with `chmod +x shh-linux`, and run with `./shh-linux`.
+            - **macOS:** Download `shh-macOS.zip`, unzip it, and run the `.app` bundle.
           files: |
             shh-*/*
         env:
